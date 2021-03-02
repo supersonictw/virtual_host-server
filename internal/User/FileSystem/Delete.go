@@ -4,32 +4,32 @@
 package FileSystem
 
 import (
-	"github.com/supersonictw/virtual_host-server/internal/controller/FileSystem/middleware"
-	"github.com/supersonictw/virtual_host-server/internal/model"
+	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem/middleware"
+	"github.com/supersonictw/virtual_host-server/internal/Http"
 	"os"
 )
 
 type Remove struct {
-	session *model.Session
+	session *Http.Session
 	path    string
 }
 
-func NewRemove(session *model.Session, path string) Interface {
+func NewRemove(session *Http.Session, path string) Interface {
 	instance := new(Remove)
 	instance.session = session
 	instance.path = middleware.FullPathExpressor(path)
 	return instance
 }
 
-func (r *Remove) validate() bool {
+func (r *Remove) Validate() bool {
 	if !middleware.RefactorPathValidator(r.path, r.session) {
 		return false
 	}
 	return true
 }
 
-func (r *Remove) refactor() interface{} {
-	if !r.validate() {
+func (r *Remove) Refactor() interface{} {
+	if !r.Validate() {
 		return false
 	}
 	err := os.Remove(r.path)

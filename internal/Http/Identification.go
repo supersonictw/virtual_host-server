@@ -1,9 +1,9 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package model
+package Http
 
-type User struct {
+type Identification struct {
 	Identity string
 	DisplayName string
 	Picture string 

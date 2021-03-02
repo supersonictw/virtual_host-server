@@ -1,5 +1,8 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package Access
+package Admin
 
+func ManageUser() bool {
+	return true
+}

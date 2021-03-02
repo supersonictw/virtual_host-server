@@ -4,35 +4,36 @@
 package FileSystem
 
 import (
-	"github.com/supersonictw/virtual_host-server/internal/controller/FileSystem/middleware"
-	"github.com/supersonictw/virtual_host-server/internal/model"
-	"io/ioutil"
+	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem/middleware"
+	"github.com/supersonictw/virtual_host-server/internal/Http"
 )
 
 type Write struct {
-	session *model.Session
+	session *Http.Session
 	path    string
 }
 
-func NewWrite(session *model.Session, path string) Interface {
+func NewWrite(session *Http.Session, path string) Interface {
 	instance := new(Write)
 	instance.session = session
 	instance.path = middleware.FullPathExpressor(path)
 	return instance
 }
 
-func (w *Write) validate() bool {
+func (w *Write) Validate() bool {
 	if !middleware.RefactorPathValidator(w.path, w.session) {
 		return false
 	}
 	return true
 }
 
-func (w *Write) refactor() interface{} {
-	if !w.validate() {
+func (w *Write) Refactor() interface{} {
+	if !w.Validate() {
 		return false
 	}
-	err := ioutil.WriteFile(w.path, []byte{}, 0644)
+	context := w.session.Context
+	file, _ := context.FormFile("file")
+	err := context.SaveUploadedFile(file, w.path)
 	if err != nil {
 		panic(err)
 	}

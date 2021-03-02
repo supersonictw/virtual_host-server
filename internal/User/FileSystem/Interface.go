@@ -1,5 +1,9 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package Access
+package FileSystem
 
+type Interface interface {
+	Validate() bool
+	Refactor() interface{}
+}

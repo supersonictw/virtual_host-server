@@ -5,19 +5,19 @@ package Http
 
 import (
 	"context"
-	"github.com/supersonictw/virtual_host-server/internal/model"
+	"github.com/gin-gonic/gin"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
 )
 
-type Authorize struct {
+type Authorization struct {
 	client *oauth2.Service
 	userInfo *oauth2.Userinfo
 }
 
-func NewAuthorize(accessToken string) *Authorize {
+func NewAuthorization(accessToken string) *Authorization {
 	var err error
-	instance := new(Authorize)
+	instance := new(Authorization)
 	ctx := context.Background()
 	instance.client, err = oauth2.NewService(ctx, option.WithScopes(oauth2.OpenIDScope))
 	if err != nil {
@@ -30,8 +30,15 @@ func NewAuthorize(accessToken string) *Authorize {
 	return instance
 }
 
-func (handler *Authorize) GetUser() *model.User {
-	user := new(model.User)
+func (handler *Authorization) GetSession(c *gin.Context) *Session {
+	session := new(Session)
+	session.Identification = handler.GetIdentification()
+	session.Context = c
+	return session
+}
+
+func (handler *Authorization) GetIdentification() *Identification {
+	user := new(Identification)
 	user.DisplayName = handler.userInfo.Name
 	user.Identity = handler.userInfo.Id
 	user.Picture = handler.userInfo.Picture
