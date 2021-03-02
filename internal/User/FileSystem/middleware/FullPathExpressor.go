@@ -11,10 +11,13 @@ import (
 	"github.com/supersonictw/virtual_host-server/internal/Http"
 )
 
-func FullPathExpressor(path string, identification *Http.Identification) string {
+func init() {
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
+}
+
+func FullPathExpressor(path string, identification *Http.Identification) string {
 	identity := identification.Identity
 	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
 	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, identity, path)

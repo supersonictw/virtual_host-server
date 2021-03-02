@@ -9,10 +9,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/supersonictw/virtual_host-server/internal/User"
 	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem"
-	"log"
 	"net/http"
 	"os"
-	"time"
 )
 
 func init() {
@@ -21,20 +19,7 @@ func init() {
 	}
 }
 
-func init() {
-	logRootPath := os.Getenv("LOG_DIRECTORY_PATH")
-	time := time.Now().Format(time.RFC3339)
-	logPath := fmt.Sprintf("%s/%s.log", logRootPath, time)
-	f, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	log.SetOutput(f)
-}
-
 func main() {
-
 	router := gin.Default()
 
 	router.GET("/", func(c *gin.Context) {
