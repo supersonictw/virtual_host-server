@@ -23,6 +23,12 @@ func main() {
 	router.GET("/user/:path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
 		handler := FileSystem.NewRead(session, path)
 		result := handler.Refactor().(*FileSystem.ReadResponse)
 		if result.Status {

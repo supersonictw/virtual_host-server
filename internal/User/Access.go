@@ -11,7 +11,7 @@ import (
 func NewAccess(c *gin.Context) *Http.Session {
 	accessToken, err := c.Cookie("vhs_access")
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	authentication := Http.NewAuthorization(accessToken)
 	return authentication.GetSession(c)
