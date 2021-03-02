@@ -16,12 +16,12 @@ type Write struct {
 func NewWrite(session *Http.Session, path string) Interface {
 	instance := new(Write)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path)
+	instance.path = middleware.FullPathExpressor(path, session.Identification)
 	return instance
 }
 
 func (w *Write) Validate() bool {
-	if !middleware.RefactorPathValidator(w.path, w.session) {
+	if !middleware.RefactorPathValidator(w.path, w.session.Identification) {
 		return false
 	}
 	return true

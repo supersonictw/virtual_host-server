@@ -17,12 +17,12 @@ type Remove struct {
 func NewRemove(session *Http.Session, path string) Interface {
 	instance := new(Remove)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path)
+	instance.path = middleware.FullPathExpressor(path, session.Identification)
 	return instance
 }
 
 func (r *Remove) Validate() bool {
-	if !middleware.RefactorPathValidator(r.path, r.session) {
+	if !middleware.RefactorPathValidator(r.path, r.session.Identification) {
 		return false
 	}
 	return true

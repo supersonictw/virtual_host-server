@@ -20,7 +20,7 @@ func main() {
 		})
 	})
 
-	router.GET("/user/:path", func(c *gin.Context) {
+	router.GET("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
 		if session == nil {
@@ -34,7 +34,11 @@ func main() {
 		if result.Status {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
-				"data": result.Data,
+				"data": result,
+			})
+		} else if result.Type == 0 {
+			c.JSON(http.StatusNotFound, gin.H{
+				"status": 404,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -43,7 +47,7 @@ func main() {
 		}
 	})
 
-	router.POST("/user/:path", func(c *gin.Context) {
+	router.POST("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
 		if session == nil {
@@ -64,7 +68,7 @@ func main() {
 		}
 	})
 
-	router.PUT("/user/:path", func(c *gin.Context) {
+	router.PUT("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
 		if session == nil {
@@ -85,7 +89,7 @@ func main() {
 		}
 	})
 
-	router.DELETE("/user/:path", func(c *gin.Context) {
+	router.DELETE("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
 		if session == nil {

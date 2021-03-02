@@ -17,12 +17,12 @@ type Mkdir struct {
 func NewMkdir(session *Http.Session, path string) Interface {
 	instance := new(Mkdir)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path)
+	instance.path = middleware.FullPathExpressor(path, session.Identification)
 	return instance
 }
 
 func (m *Mkdir) Validate() bool {
-	if !middleware.RefactorPathValidator(m.path, m.session) {
+	if !middleware.RefactorPathValidator(m.path, m.session.Identification) {
 		return false
 	}
 	return true

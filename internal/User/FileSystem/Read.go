@@ -5,15 +5,19 @@ package FileSystem
 
 import (
 	"encoding/base64"
-	"encoding/json"
-	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem/middleware"
-	"github.com/supersonictw/virtual_host-server/internal/Http"
+	"fmt"
+	"io/fs"
 	"io/ioutil"
+	"strings"
+
+	"github.com/supersonictw/virtual_host-server/internal/Http"
+	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem/middleware"
 )
 
 type ReadResponse struct {
-	Status bool
-	Data   string
+	Status bool `json:"status"`
+	Type int `json:"type"`
+	Data   string `json:"data"`
 }
 
 type Read struct {
@@ -24,15 +28,24 @@ type Read struct {
 func NewRead(session *Http.Session, path string) Interface {
 	instance := new(Read)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path)
+	instance.path = middleware.FullPathExpressor(path, session.Identification)
+	fmt.Println(instance.path)
 	return instance
 }
 
 func (r *Read) Validate() bool {
-	if !middleware.RefactorPathValidator(r.path, r.session) {
+	if !middleware.RefactorPathValidator(r.path, r.session.Identification) {
 		return false
 	}
 	return true
+}
+
+func getFileNamesInDirectory(files []fs.FileInfo) []string {
+	names := make([]string, len(files))
+	for i, f := range files {
+		names[i] = f.Name()
+	}
+	return names
 }
 
 func (r *Read) directoryHandler(response *ReadResponse) {
@@ -40,12 +53,13 @@ func (r *Read) directoryHandler(response *ReadResponse) {
 	if err != nil {
 		panic(err)
 	}
-	json, err := json.Marshal(directory)
+	fileNames := getFileNamesInDirectory(directory)
+	fmt.Println(fileNames)
 	if err != nil {
 		panic(err)
 	}
 	response.Status = true
-	response.Data = string(json)
+	response.Data = strings.Join(fileNames, ",")
 }
 
 func (r *Read) fileHandler(response *ReadResponse) {
@@ -60,11 +74,11 @@ func (r *Read) fileHandler(response *ReadResponse) {
 func (r *Read) Refactor() interface{} {
 	response := new(ReadResponse)
 	response.Status = false
+	response.Type = middleware.PathTypeDetector(r.path)
 	if !r.Validate() {
 		return response
 	}
-	fileType := middleware.PathTypeDetector(r.path)
-	switch fileType {
+	switch response.Type {
 	case middleware.Directory:
 		r.directoryHandler(response)
 		break
@@ -72,7 +86,7 @@ func (r *Read) Refactor() interface{} {
 		r.fileHandler(response)
 		break
 	default:
-		return fileType
+		return response
 	}
 	return response
 }

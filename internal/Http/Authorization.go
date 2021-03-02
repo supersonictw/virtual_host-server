@@ -38,10 +38,10 @@ func (handler *Authorization) GetSession(c *gin.Context) *Session {
 }
 
 func (handler *Authorization) GetIdentification() *Identification {
-	user := new(Identification)
-	user.DisplayName = handler.userInfo.Name
-	user.Identity = handler.userInfo.Id
-	user.Picture = handler.userInfo.Picture
-	user.Email = handler.userInfo.Email
-	return user
+	identification := new(Identification)
+	identification.DisplayName = handler.userInfo.Name
+	identification.Identity = handler.userInfo.Id
+	identification.Picture = handler.userInfo.Picture
+	identification.Email = handler.userInfo.Email
+	return identification
 }
