@@ -4,14 +4,20 @@
 package middleware
 
 import (
+	"os"
 	"fmt"
 	"path/filepath"
+	"github.com/joho/godotenv"
 	"github.com/supersonictw/virtual_host-server/internal/Http"
 )
 
 func FullPathExpressor(path string, identification *Http.Identification) string {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
 	identity := identification.Identity
-	wordDirectory := fmt.Sprintf("%s/%s", identity, path)
+	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
+	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, identity, path)
 	result, err := filepath.Abs(wordDirectory)
 	if err != nil {
 		panic(err)

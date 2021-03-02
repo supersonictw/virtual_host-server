@@ -5,7 +5,6 @@ package FileSystem
 
 import (
 	"encoding/base64"
-	"fmt"
 	"io/fs"
 	"io/ioutil"
 	"strings"
@@ -29,7 +28,6 @@ func NewRead(session *Http.Session, path string) Interface {
 	instance := new(Read)
 	instance.session = session
 	instance.path = middleware.FullPathExpressor(path, session.Identification)
-	fmt.Println(instance.path)
 	return instance
 }
 
@@ -54,7 +52,6 @@ func (r *Read) directoryHandler(response *ReadResponse) {
 		panic(err)
 	}
 	fileNames := getFileNamesInDirectory(directory)
-	fmt.Println(fileNames)
 	if err != nil {
 		panic(err)
 	}
@@ -88,5 +85,6 @@ func (r *Read) Refactor() interface{} {
 	default:
 		return response
 	}
+	r.session.Journalist("Read", r.path)
 	return response
 }

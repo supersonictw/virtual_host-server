@@ -5,3 +5,9 @@ vhs.exe
 # Config Files
 .env
 configs/
+
+# Log Directory
+logs/
+
+# Storages Directory
+storage/

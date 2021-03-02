@@ -36,5 +36,6 @@ func (r *Remove) Refactor() interface{} {
 	if err != nil {
 		panic(err)
 	}
+	r.session.Journalist("Remove", r.path)
 	return true
 }

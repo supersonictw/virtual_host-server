@@ -37,5 +37,6 @@ func (w *Write) Refactor() interface{} {
 	if err != nil {
 		panic(err)
 	}
+	w.session.Journalist("Write", w.path)
 	return true
 }

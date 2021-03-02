@@ -9,14 +9,31 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/supersonictw/virtual_host-server/internal/User"
 	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem"
+	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
-func main() {
+func init() {
 	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
+}
+
+func init() {
+	logRootPath := os.Getenv("LOG_DIRECTORY_PATH")
+	time := time.Now().Format(time.RFC3339)
+	logPath := fmt.Sprintf("%s/%s.log", logRootPath, time)
+	f, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+}
+
+func main() {
 
 	router := gin.Default()
 
@@ -24,6 +41,20 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"application": "virtual_host-system",
 			"copyright":   "(c)2021 SuperSonic(https://github.com/supersonictw)",
+		})
+	})
+
+	router.GET("/identity", func(c *gin.Context) {
+		session := User.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"status": 200,
+			"data":   session.Identification.Identity,
 		})
 	})
 

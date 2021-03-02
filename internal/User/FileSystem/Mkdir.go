@@ -36,5 +36,6 @@ func (m *Mkdir) Refactor() interface{} {
 	if err != nil {
 		panic(err)
 	}
+	m.session.Journalist("Mkdir", m.path)
 	return true
 }
