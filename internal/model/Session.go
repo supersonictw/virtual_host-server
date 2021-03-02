@@ -4,5 +4,5 @@
 package model
 
 type Session struct {
-	
+	User *User
 }

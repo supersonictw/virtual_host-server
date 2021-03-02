@@ -3,12 +3,7 @@
 
 package FileSystem
 
-import "github.com/supersonictw/virtual_host-server/internal/model"
-
 type Interface interface {
-	session *model.Session
-	path string
-	fullPath string
-	validate()
-	refactor()
+	validate() bool
+	refactor() interface{}
 }

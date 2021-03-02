@@ -3,13 +3,38 @@
 
 package FileSystem
 
-type Write struct {}
+import (
+	"github.com/supersonictw/virtual_host-server/internal/controller/FileSystem/middleware"
+	"github.com/supersonictw/virtual_host-server/internal/model"
+	"io/ioutil"
+)
 
-func NewWrite() Interface {
+type Write struct {
+	session *model.Session
+	path    string
+}
+
+func NewWrite(session *model.Session, path string) Interface {
 	instance := new(Write)
+	instance.session = session
+	instance.path = middleware.FullPathExpressor(path)
 	return instance
 }
 
-func (w *Write) validate() {}
+func (w *Write) validate() bool {
+	if !middleware.RefactorPathValidator(w.path, w.session) {
+		return false
+	}
+	return true
+}
 
-func (w *Write) refactor(){}
+func (w *Write) refactor() interface{} {
+	if !w.validate() {
+		return false
+	}
+	err := ioutil.WriteFile(w.path, []byte{}, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return true
+}
