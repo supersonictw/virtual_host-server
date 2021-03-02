@@ -34,6 +34,7 @@ func main() {
 		if result.Status {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
+				"data": result.Data,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
@@ -45,6 +46,12 @@ func main() {
 	router.POST("/user/:path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
 		handler := FileSystem.NewMkdir(session, path)
 		if handler.Refactor().(bool) {
 			c.JSON(http.StatusOK, gin.H{
@@ -60,6 +67,12 @@ func main() {
 	router.PUT("/user/:path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
 		handler := FileSystem.NewWrite(session, path)
 		if handler.Refactor().(bool) {
 			c.JSON(http.StatusOK, gin.H{
@@ -75,6 +88,12 @@ func main() {
 	router.DELETE("/user/:path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := User.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
 		handler := FileSystem.NewRemove(session, path)
 		if handler.Refactor().(bool) {
 			c.JSON(http.StatusOK, gin.H{
