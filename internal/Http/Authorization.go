@@ -4,10 +4,10 @@
 package Http
 
 import (
-	"os"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	OpenID2 "golang.org/x/oauth2"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
 )
@@ -17,18 +17,21 @@ type Authorization struct {
 	userInfo *oauth2.Userinfo
 }
 
-func NewAuthorization(accessToken string) *Authorization {
-	var err error
-	if  err = godotenv.Load(); err != nil {
+func init() {
+	if err := godotenv.Load(); err != nil {
 		panic(err)
 	}
+}
+
+func NewAuthorization(accessToken string) *Authorization {
+	var err error
 	instance := new(Authorization)
 	ctx := context.Background()
 	instance.client, err = oauth2.NewService(
 		ctx,
-		option.WithCredentialsFile(
-			os.Getenv("GOOGLE_CREDENTIALS_FILE_PATH"),
-		),
+		option.WithTokenSource(OpenID2.StaticTokenSource(&OpenID2.Token{
+			AccessToken: accessToken,
+		})),
 		option.WithScopes(
 			oauth2.OpenIDScope,
 			oauth2.UserinfoEmailScope,
