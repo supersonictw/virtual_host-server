@@ -4,22 +4,37 @@
 package Http
 
 import (
+	"os"
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
 )
 
 type Authorization struct {
-	client *oauth2.Service
+	client   *oauth2.Service
 	userInfo *oauth2.Userinfo
 }
 
 func NewAuthorization(accessToken string) *Authorization {
 	var err error
+	if  err = godotenv.Load(); err != nil {
+		panic(err)
+	}
 	instance := new(Authorization)
 	ctx := context.Background()
-	instance.client, err = oauth2.NewService(ctx, option.WithScopes(oauth2.OpenIDScope))
+	instance.client, err = oauth2.NewService(
+		ctx,
+		option.WithCredentialsFile(
+			os.Getenv("GOOGLE_CREDENTIALS_FILE_PATH"),
+		),
+		option.WithScopes(
+			oauth2.OpenIDScope,
+			oauth2.UserinfoEmailScope,
+			oauth2.UserinfoProfileScope,
+		),
+	)
 	if err != nil {
 		panic(err)
 	}

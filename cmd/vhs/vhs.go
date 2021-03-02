@@ -4,13 +4,20 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/supersonictw/virtual_host-server/internal/User"
 	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem"
 	"net/http"
+	"os"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		panic(err)
+	}
+
 	router := gin.Default()
 
 	router.GET("/", func(c *gin.Context) {
@@ -34,7 +41,7 @@ func main() {
 		if result.Status {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
-				"data": result,
+				"data":   result,
 			})
 		} else if result.Type == 0 {
 			c.JSON(http.StatusNotFound, gin.H{
@@ -110,8 +117,8 @@ func main() {
 		}
 	})
 
-	err := router.Run(":8080")
-	if err != nil {
+	exposePort := fmt.Sprintf(":%s", os.Getenv("EXPOSE_PORT"))
+	if err := router.Run(exposePort); err != nil {
 		panic(err)
 	}
 }
