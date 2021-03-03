@@ -29,9 +29,13 @@ func NewAuthorization(accessToken string) *Authorization {
 	ctx := context.Background()
 	instance.client, err = oauth2.NewService(
 		ctx,
-		option.WithTokenSource(OpenID2.StaticTokenSource(&OpenID2.Token{
-			AccessToken: accessToken,
-		})),
+		option.WithTokenSource(
+			OpenID2.StaticTokenSource(
+				&OpenID2.Token{
+					AccessToken: accessToken,
+				},
+			),
+		),
 		option.WithScopes(
 			oauth2.OpenIDScope,
 			oauth2.UserinfoEmailScope,
