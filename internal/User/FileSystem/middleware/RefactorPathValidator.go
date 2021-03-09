@@ -4,7 +4,6 @@
 package middleware
 
 import (
-	"io/fs"
 	"strings"
 	"github.com/supersonictw/virtual_host-server/internal/Http"
 	"path/filepath"
@@ -17,9 +16,6 @@ func RefactorPathValidator(path string, identification *Http.Identification) boo
 	}
 	userDirectoryPath := FullPathExpressor("", identification)
 	if !strings.HasPrefix(path, userDirectoryPath) {
-	    return false
-	}
-	if !fs.ValidPath(path) {
 	    return false
 	}
 	return true
