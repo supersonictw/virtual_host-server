@@ -14,7 +14,7 @@ func NewAccess(c *gin.Context) *Http.Session {
 	if err != nil {
 		return nil
 	}
-	if strings.Trim(accessToken, "") == "" {
+	if strings.Trim(accessToken, " ") == "" {
 		return nil
 	}
 	authentication := Http.NewAuthorization(accessToken)
