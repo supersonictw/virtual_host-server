@@ -35,7 +35,7 @@ func (r *Remove) Refactor() interface{} {
 	if !r.Validate() {
 		return false
 	}
-	err := os.Remove(r.path)
+	err := os.RemoveAll(r.path)
 	if err != nil {
 		panic(err)
 	}
