@@ -18,5 +18,8 @@ func NewAccess(c *gin.Context) *Http.Session {
 		return nil
 	}
 	authentication := Http.NewAuthorization(accessToken)
+	if authentication == nil {
+		return nil
+	}
 	return authentication.GetSession(c)
 }
