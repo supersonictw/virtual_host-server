@@ -6,6 +6,6 @@ package Http
 type Identification struct {
 	Identity string `json:"identity"`
 	DisplayName string `json:"displayName"`
-	Picture string  `json:"picture"`
+	PictureURL string  `json:"pictureUrl"`
 	Email string `json:"email"`
 }

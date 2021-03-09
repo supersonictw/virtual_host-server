@@ -70,7 +70,7 @@ func (handler *Authorization) GetIdentification() *Identification {
 	identification := new(Identification)
 	identification.DisplayName = handler.userInfo.Name
 	identification.Identity = handler.userInfo.Id
-	identification.Picture = handler.userInfo.Picture
+	identification.PictureURL = handler.userInfo.Picture
 	identification.Email = handler.userInfo.Email
 	return identification
 }
