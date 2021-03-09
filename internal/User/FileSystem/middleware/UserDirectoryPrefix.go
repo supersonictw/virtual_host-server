@@ -18,13 +18,10 @@ func init() {
 }
 
 func UserDirectoryPrefix(identification *Http.Identification) string {
-	var prefix string
 	if os.Getenv("STORAGE_USER_DIRECTORY_NAME_METHOD") == "email" {
 		splited := strings.Split(identification.Email, "@")
     	sort.Sort(sort.Reverse(sort.StringSlice(splited)))
-		prefix = strings.Join(splited, "/")
-	} else {
-		prefix = identification.Identity
+		return strings.Join(splited, "/")
 	}
-	return prefix
+	return identification.Identity
 }
