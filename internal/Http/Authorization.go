@@ -4,13 +4,13 @@
 package Http
 
 import (
-	"log"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	OpenID2 "golang.org/x/oauth2"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
+	"os"
 )
 
 type Authorization struct {
@@ -44,10 +44,16 @@ func NewAuthorization(accessToken string) *Authorization {
 		),
 	)
 	if err != nil {
+		if os.Getenv("ENVIRONMENT") == "env" {
+			panic(err)
+		}
 		return nil
 	}
 	instance.userInfo, err = instance.client.Userinfo.Get().Do()
 	if err != nil {
+		if os.Getenv("ENVIRONMENT") == "env" {
+			panic(err)
+		}
 		return nil
 	}
 	return instance
