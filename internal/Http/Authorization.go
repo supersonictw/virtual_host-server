@@ -4,6 +4,7 @@
 package Http
 
 import (
+	"log"
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -43,11 +44,11 @@ func NewAuthorization(accessToken string) *Authorization {
 		),
 	)
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	instance.userInfo, err = instance.client.Userinfo.Get().Do()
 	if err != nil {
-		panic(err)
+		return nil
 	}
 	return instance
 }
