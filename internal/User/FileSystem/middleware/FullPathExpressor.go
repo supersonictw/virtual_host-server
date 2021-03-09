@@ -18,9 +18,9 @@ func init() {
 }
 
 func FullPathExpressor(path string, identification *Http.Identification) string {
-	identity := identification.Identity
+	prefix := UserDirectoryPrefix(identification)
 	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
-	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, identity, path)
+	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, prefix, path)
 	result, err := filepath.Abs(wordDirectory)
 	if err != nil {
 		panic(err)
