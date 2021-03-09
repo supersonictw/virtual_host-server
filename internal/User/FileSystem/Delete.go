@@ -25,6 +25,9 @@ func (r *Remove) Validate() bool {
 	if !middleware.RefactorPathValidator(r.path, r.session.Identification) {
 		return false
 	}
+	if _, err := os.Stat(r.path); os.IsNotExist(err) {
+		return false
+	}
 	return true
 }
 

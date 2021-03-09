@@ -25,6 +25,9 @@ func (m *Mkdir) Validate() bool {
 	if !middleware.RefactorPathValidator(m.path, m.session.Identification) {
 		return false
 	}
+	if _, err := os.Stat(m.path); !os.IsNotExist(err) {
+		return false
+	}
 	return true
 }
 
