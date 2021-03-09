@@ -29,7 +29,7 @@ func main() {
 		})
 	})
 
-	router.GET("/identity", func(c *gin.Context) {
+	router.GET("/profile", func(c *gin.Context) {
 		session := User.NewAccess(c)
 		if session == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
@@ -39,7 +39,7 @@ func main() {
 		}
 		c.JSON(http.StatusOK, gin.H{
 			"status": 200,
-			"data":   session.Identification.Identity,
+			"data":   session.Identification,
 		})
 	})
 

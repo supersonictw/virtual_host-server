@@ -4,8 +4,8 @@
 package Http
 
 type Identification struct {
-	Identity string
-	DisplayName string
-	Picture string 
-	Email string
+	Identity string `json:"identity"`
+	DisplayName string `json:"displayName"`
+	Picture string  `json:"picture"`
+	Email string `json:"email"`
 }
