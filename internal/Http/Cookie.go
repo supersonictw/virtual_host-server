@@ -4,7 +4,6 @@
 package Http
 
 import (
-	"net/http"
 	"os"
 	"strings"
 
@@ -20,28 +19,59 @@ func init() {
 	}
 }
 
-func ReadAuthCookie(c *gin.Context) *Session {
-	accessString, err := c.Cookie("vhs_access")
-	if err != nil {
-		return nil
-	}
-	if strings.Trim(accessString, " ") == "" {
-		return nil
+func ReadAuthCookie(c *gin.Context) (*Session, error) {
+	token, err := c.Cookie("vhs_access")
+	if err != nil || strings.Trim(token, " ") == "" {
+		return nil, jwt.ErrInvalidKey
 	}
 
+	secret := []byte(os.Getenv("JWT_SALT_SECRET"))
 	session := new(Session)
-	return session
+	session.Context = c
+
+	tokenClaims, err := jwt.ParseWithClaims(
+		token,
+		&Auth.Identification{},
+		func(token *jwt.Token) (i interface{}, err error) {
+			return secret, nil
+		},
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims, ok := tokenClaims.Claims.(*Auth.Identification)
+
+	if !ok || !tokenClaims.Valid {
+		return nil, jwt.ErrInvalidKey
+	}
+
+	session.Identification = claims
+
+	return session, nil
 }
 
-func IssueAuthCookie(accessToken string, c *gin.Context) {
-	identification := Auth.NewAuthorization(accessToken).GetIdentification()
-	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodRS256, identification)
-	token, err := tokenClaims.SignedString(os.Getenv("JWT_SALT_SECRET"))
+func IssueAuthCookie(accessToken string, c *gin.Context) error {
+	auth, err := Auth.NewAuthorization(accessToken)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": err.Error(),
-		})
-		return
+		return err
 	}
-	c.SetCookie("vhs_access", token, 3600, "/", "localhost", false, true)
+	identification := auth.GetIdentification()
+	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, identification)
+	secret := []byte(os.Getenv("JWT_SALT_SECRET"))
+	token, err := tokenClaims.SignedString(secret)
+	if err != nil {
+		return err
+	}
+	domain := os.Getenv("BACKEND_DOMAIN")
+	secure := func() bool {
+		status := os.Getenv("BACKEND_SSL")
+		if status == "yes" {
+			return true
+		}
+		return false
+	}()
+	c.SetCookie("vhs_access", token, 3600, "/", domain, secure, true)
+	return nil
 }

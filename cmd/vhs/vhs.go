@@ -40,7 +40,14 @@ func main() {
 			return
 		}
 		accessToken := c.Param("accessToken")
-		Http.IssueAuthCookie(accessToken, c)
+		err := Http.IssueAuthCookie(accessToken, c)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+				"reason": err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusOK, gin.H{
 			"status": 200,
 		})

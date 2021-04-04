@@ -24,7 +24,7 @@ func init() {
 	}
 }
 
-func NewAuthorization(accessToken string) *Authorization {
+func NewAuthorization(accessToken string) (*Authorization, error) {
 	var err error
 	instance := new(Authorization)
 	ctx := context.Background()
@@ -47,16 +47,16 @@ func NewAuthorization(accessToken string) *Authorization {
 		if os.Getenv("ENVIRONMENT") == "env" {
 			panic(err)
 		}
-		return nil
+		return nil, err
 	}
 	instance.userInfo, err = instance.client.Userinfo.Get().Do()
 	if err != nil {
 		if os.Getenv("ENVIRONMENT") == "env" {
 			panic(err)
 		}
-		return nil
+		return nil, err
 	}
-	return instance
+	return instance, nil
 }
 
 func (handler *Authorization) GetIdentification() *Identification {
