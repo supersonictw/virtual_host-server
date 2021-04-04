@@ -4,11 +4,12 @@
 package middleware
 
 import (
-	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Http"
-	"strings"
-	"sort"
 	"os"
+	"sort"
+	"strings"
+
+	"github.com/joho/godotenv"
+	"github.com/supersonictw/virtual_host-server/internal/Auth"
 )
 
 func init() {
@@ -17,11 +18,11 @@ func init() {
 	}
 }
 
-func UserDirectoryPrefix(identification *Http.Identification) string {
+func UserDirectoryPrefix(identification *Auth.Identification) string {
 	if os.Getenv("STORAGE_USER_DIRECTORY_NAME_METHOD") == "email" {
 		splited := strings.Split(identification.Email, "@")
-    	sort.Sort(sort.Reverse(sort.StringSlice(splited)))
+		sort.Sort(sort.Reverse(sort.StringSlice(splited)))
 		return strings.Join(splited, "/")
 	}
-	return identification.Identity
+	return identification.Subject
 }

@@ -4,11 +4,12 @@
 package middleware
 
 import (
-	"os"
 	"fmt"
+	"os"
 	"path/filepath"
+
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Http"
+	"github.com/supersonictw/virtual_host-server/internal/Auth"
 )
 
 func init() {
@@ -17,7 +18,7 @@ func init() {
 	}
 }
 
-func FullPathExpressor(path string, identification *Http.Identification) string {
+func FullPathExpressor(path string, identification *Auth.Identification) string {
 	prefix := UserDirectoryPrefix(identification)
 	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
 	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, prefix, path)

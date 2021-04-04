@@ -5,15 +5,17 @@ package Http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"github.com/supersonictw/virtual_host-server/internal/Auth"
 )
 
 type Session struct {
-	Identification *Identification
+	Identification *Auth.Identification
 	Context        *gin.Context
 }
 
@@ -39,6 +41,6 @@ func (s *Session) Journalist(action string, target string) {
 		target,
 		s.Identification.DisplayName,
 		s.Identification.Email,
-		s.Identification.Identity,
+		s.Identification.Subject,
 	)
 }

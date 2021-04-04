@@ -4,22 +4,10 @@
 package User
 
 import (
-	"strings"
 	"github.com/gin-gonic/gin"
 	"github.com/supersonictw/virtual_host-server/internal/Http"
 )
 
 func NewAccess(c *gin.Context) *Http.Session {
-	accessToken, err := c.Cookie("vhs_access")
-	if err != nil {
-		return nil
-	}
-	if strings.Trim(accessToken, " ") == "" {
-		return nil
-	}
-	authentication := Http.NewAuthorization(accessToken)
-	if authentication == nil {
-		return nil
-	}
-	return authentication.GetSession(c)
+	return Http.ReadAuthCookie(c)
 }

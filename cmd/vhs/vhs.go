@@ -5,12 +5,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/User"
-	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem"
 	"net/http"
 	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"github.com/supersonictw/virtual_host-server/internal/Http"
+	"github.com/supersonictw/virtual_host-server/internal/User"
+	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem"
 )
 
 func init() {
@@ -26,6 +28,21 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"application": "virtual_host-system",
 			"copyright":   "(c)2021 SuperSonic(https://github.com/supersonictw)",
+		})
+	})
+
+	router.GET("/authorize/:accessToken", func(c *gin.Context) {
+		session := Http.ReadAuthCookie(c)
+		if session != nil {
+			c.JSON(http.StatusForbidden, gin.H{
+				"status": 403,
+			})
+			return
+		}
+		accessToken := c.Param("accessToken")
+		Http.IssueAuthCookie(accessToken, c)
+		c.JSON(http.StatusOK, gin.H{
+			"status": 200,
 		})
 	})
 
