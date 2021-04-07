@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,10 +33,10 @@ func main() {
 		frontendURI = fmt.Sprintf("http://%s", os.Getenv("FRONTEND_DOMAIN"))
 	}
 
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{frontendURI}
-
-	router.Use(cors.New(config))
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowOrigins = []string{frontendURI}
+	corsConfig.AllowCredentials = true
+	corsConfig.AddAllowHeaders("Authorization")
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -44,7 +45,7 @@ func main() {
 		})
 	})
 
-	router.GET("/authorize/:accessToken", func(c *gin.Context) {
+	router.GET("/authorize", func(c *gin.Context) {
 		session, _ := vhsHttp.ReadAuthCookie(c)
 		if session != nil {
 			c.JSON(http.StatusForbidden, gin.H{
@@ -52,7 +53,16 @@ func main() {
 			})
 			return
 		}
-		accessToken := c.Param("accessToken")
+
+		authorization := strings.Split(c.GetHeader("Authorization"), " ")
+		if len(authorization) != 2 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+			})
+			return
+		}
+		accessToken := authorization[1]
+
 		err := vhsHttp.IssueAuthCookie(accessToken, c)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
@@ -61,6 +71,7 @@ func main() {
 			})
 			return
 		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"status": 200,
 		})
@@ -169,6 +180,8 @@ func main() {
 			})
 		}
 	})
+
+	router.Use(cors.New(corsConfig))
 
 	exposePort := fmt.Sprintf(":%s", os.Getenv("EXPOSE_PORT"))
 	if err := router.Run(exposePort); err != nil {
