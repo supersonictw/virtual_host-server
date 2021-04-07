@@ -25,8 +25,15 @@ func init() {
 func main() {
 	router := gin.Default()
 
+	var frontendURI string
+	if os.Getenv("FRONTEND_SSL") == "yes" {
+		frontendURI = fmt.Sprintf("https://%s", os.Getenv("FRONTEND_DOMAIN"))
+	} else {
+		frontendURI = fmt.Sprintf("http://%s", os.Getenv("FRONTEND_DOMAIN"))
+	}
+
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{os.Getenv("FRONTEND_DOMAIN")}
+	config.AllowOrigins = []string{frontendURI}
 
 	router.Use(cors.New(config))
 
