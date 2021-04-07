@@ -1,4 +1,4 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
 package middleware
@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Auth"
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 )
 
 func init() {
@@ -18,7 +18,7 @@ func init() {
 	}
 }
 
-func UserDirectoryPrefix(identification *Auth.Identification) string {
+func UserDirectoryPrefix(identification *auth.Identification) string {
 	if os.Getenv("STORAGE_USER_DIRECTORY_NAME_METHOD") == "email" {
 		splited := strings.Split(identification.Email, "@")
 		sort.Sort(sort.Reverse(sort.StringSlice(splited)))

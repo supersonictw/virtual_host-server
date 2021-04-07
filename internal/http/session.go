@@ -1,4 +1,4 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
 package http
@@ -11,11 +11,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Auth"
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 )
 
 type Session struct {
-	Identification *Auth.Identification
+	Identification *auth.Identification
 	Context        *gin.Context
 }
 

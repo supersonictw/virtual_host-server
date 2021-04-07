@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/gin-contrib/cors"
+	vhsHttp "github.com/supersonictw/virtual_host-server/internal/http"
 	"github.com/supersonictw/virtual_host-server/internal/user"
 	"github.com/supersonictw/virtual_host-server/internal/user/fs"
-	vhsHttp "github.com/supersonictw/virtual_host-server/internal/http"
 )
 
 func init() {
@@ -26,7 +26,7 @@ func main() {
 	router := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://google.com"}
+	config.AllowOrigins = []string{os.Getenv("FRONTEND_DOMAIN")}
 
 	router.Use(cors.New(config))
 
@@ -38,7 +38,7 @@ func main() {
 	})
 
 	router.GET("/authorize/:accessToken", func(c *gin.Context) {
-		session := vhsHttp.ReadAuthCookie(c)
+		session, _ := vhsHttp.ReadAuthCookie(c)
 		if session != nil {
 			c.JSON(http.StatusForbidden, gin.H{
 				"status": 403,

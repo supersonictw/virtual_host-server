@@ -1,4 +1,4 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
 package middleware
@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Auth"
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 )
 
 func init() {
@@ -18,7 +18,7 @@ func init() {
 	}
 }
 
-func FullPathExpressor(path string, identification *Auth.Identification) string {
+func FullPathExpressor(path string, identification *auth.Identification) string {
 	prefix := UserDirectoryPrefix(identification)
 	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
 	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, prefix, path)

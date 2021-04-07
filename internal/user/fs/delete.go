@@ -1,20 +1,21 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
 package fs
 
 import (
-	"github.com/supersonictw/virtual_host-server/internal/User/fs/middleware"
-	"github.com/supersonictw/virtual_host-server/internal/Http"
 	"os"
+
+	"github.com/supersonictw/virtual_host-server/internal/http"
+	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
 
 type Remove struct {
-	session *Http.Session
+	session *http.Session
 	path    string
 }
 
-func NewRemove(session *Http.Session, path string) Interface {
+func NewRemove(session *http.Session, path string) Interface {
 	instance := new(Remove)
 	instance.session = session
 	instance.path = middleware.FullPathExpressor(path, session.Identification)

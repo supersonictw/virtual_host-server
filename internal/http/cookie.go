@@ -1,4 +1,4 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
 package http
@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Auth"
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"gopkg.in/dgrijalva/jwt-go.v3"
 )
 
@@ -31,7 +31,7 @@ func ReadAuthCookie(c *gin.Context) (*Session, error) {
 
 	tokenClaims, err := jwt.ParseWithClaims(
 		token,
-		&Auth.Identification{},
+		&auth.Identification{},
 		func(token *jwt.Token) (i interface{}, err error) {
 			return secret, nil
 		},
@@ -41,7 +41,7 @@ func ReadAuthCookie(c *gin.Context) (*Session, error) {
 		return nil, err
 	}
 
-	claims, ok := tokenClaims.Claims.(*Auth.Identification)
+	claims, ok := tokenClaims.Claims.(*auth.Identification)
 
 	if !ok || !tokenClaims.Valid {
 		return nil, jwt.ErrInvalidKey
@@ -53,7 +53,7 @@ func ReadAuthCookie(c *gin.Context) (*Session, error) {
 }
 
 func IssueAuthCookie(accessToken string, c *gin.Context) error {
-	auth, err := Auth.NewAuthorization(accessToken)
+	auth, err := auth.NewAuthorization(accessToken)
 	if err != nil {
 		return err
 	}
