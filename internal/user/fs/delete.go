@@ -1,10 +1,10 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package FileSystem
+package fs
 
 import (
-	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem/middleware"
+	"github.com/supersonictw/virtual_host-server/internal/User/fs/middleware"
 	"github.com/supersonictw/virtual_host-server/internal/Http"
 	"os"
 )

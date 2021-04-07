@@ -1,7 +1,7 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package Auth
+package auth
 
 import "gopkg.in/dgrijalva/jwt-go.v3"
 

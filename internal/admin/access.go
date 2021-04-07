@@ -1,7 +1,7 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package Admin
+package admin
 
 import (
 	"github.com/gin-gonic/gin"
@@ -9,5 +9,9 @@ import (
 )
 
 func NewAccess(c *gin.Context) *Http.Session {
-	return Http.ReadAuthCookie(c)
+	session, err := Http.ReadAuthCookie(c)
+	if err != nil {
+		return nil
+	}
+	return session
 }

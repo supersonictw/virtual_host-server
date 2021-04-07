@@ -1,7 +1,7 @@
 // Package VHS: Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package FileSystem
+package fs
 
 import (
 	"encoding/base64"
@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/supersonictw/virtual_host-server/internal/Http"
-	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem/middleware"
+	"github.com/supersonictw/virtual_host-server/internal/User/fs/middleware"
 )
 
 type ReadResponse struct {

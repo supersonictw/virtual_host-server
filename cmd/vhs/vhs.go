@@ -10,9 +10,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/Http"
-	"github.com/supersonictw/virtual_host-server/internal/User"
-	"github.com/supersonictw/virtual_host-server/internal/User/FileSystem"
+	"github.com/gin-contrib/cors"
+	"github.com/supersonictw/virtual_host-server/internal/user"
+	"github.com/supersonictw/virtual_host-server/internal/user/fs"
+	vhsHttp "github.com/supersonictw/virtual_host-server/internal/http"
 )
 
 func init() {
@@ -24,6 +25,11 @@ func init() {
 func main() {
 	router := gin.Default()
 
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://google.com"}
+
+	router.Use(cors.New(config))
+
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"application": "virtual_host-system",
@@ -32,7 +38,7 @@ func main() {
 	})
 
 	router.GET("/authorize/:accessToken", func(c *gin.Context) {
-		session := Http.ReadAuthCookie(c)
+		session := vhsHttp.ReadAuthCookie(c)
 		if session != nil {
 			c.JSON(http.StatusForbidden, gin.H{
 				"status": 403,
@@ -40,7 +46,7 @@ func main() {
 			return
 		}
 		accessToken := c.Param("accessToken")
-		err := Http.IssueAuthCookie(accessToken, c)
+		err := vhsHttp.IssueAuthCookie(accessToken, c)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": 401,
@@ -54,7 +60,7 @@ func main() {
 	})
 
 	router.GET("/profile", func(c *gin.Context) {
-		session := User.NewAccess(c)
+		session := user.NewAccess(c)
 		if session == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": 401,
@@ -69,15 +75,15 @@ func main() {
 
 	router.GET("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
-		session := User.NewAccess(c)
+		session := user.NewAccess(c)
 		if session == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": 401,
 			})
 			return
 		}
-		handler := FileSystem.NewRead(session, path)
-		result := handler.Refactor().(*FileSystem.ReadResponse)
+		handler := fs.NewRead(session, path)
+		result := handler.Refactor().(*fs.ReadResponse)
 		if result.Status {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
@@ -96,14 +102,14 @@ func main() {
 
 	router.POST("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
-		session := User.NewAccess(c)
+		session := user.NewAccess(c)
 		if session == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": 401,
 			})
 			return
 		}
-		handler := FileSystem.NewMkdir(session, path)
+		handler := fs.NewMkdir(session, path)
 		if handler.Refactor().(bool) {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
@@ -117,14 +123,14 @@ func main() {
 
 	router.PUT("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
-		session := User.NewAccess(c)
+		session := user.NewAccess(c)
 		if session == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": 401,
 			})
 			return
 		}
-		handler := FileSystem.NewWrite(session, path)
+		handler := fs.NewWrite(session, path)
 		if handler.Refactor().(bool) {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
@@ -138,14 +144,14 @@ func main() {
 
 	router.DELETE("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
-		session := User.NewAccess(c)
+		session := user.NewAccess(c)
 		if session == nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"status": 401,
 			})
 			return
 		}
-		handler := FileSystem.NewRemove(session, path)
+		handler := fs.NewRemove(session, path)
 		if handler.Refactor().(bool) {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
