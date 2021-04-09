@@ -27,7 +27,7 @@ type Read struct {
 func NewRead(session *http.Session, path string) Interface {
 	instance := new(Read)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path, session.Identification)
+	instance.path = middleware.FullPathExpression(path, session.Identification)
 	return instance
 }
 

@@ -20,9 +20,9 @@ func init() {
 
 func UserDirectoryPrefix(identification *auth.Identification) string {
 	if os.Getenv("STORAGE_USER_DIRECTORY_NAME_METHOD") == "email" {
-		splited := strings.Split(identification.Email, "@")
-		sort.Sort(sort.Reverse(sort.StringSlice(splited)))
-		return strings.Join(splited, "/")
+		split := strings.Split(identification.Email, "@")
+		sort.Sort(sort.Reverse(sort.StringSlice(split)))
+		return strings.Join(split, "/")
 	}
-	return identification.Subject
+	return identification.Identity
 }

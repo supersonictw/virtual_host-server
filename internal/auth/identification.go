@@ -3,10 +3,8 @@
 
 package auth
 
-import "gopkg.in/dgrijalva/jwt-go.v3"
-
 type Identification struct {
-	jwt.StandardClaims
+	Identity    string `json:"identity"`
 	DisplayName string `json:"name"`
 	PictureURL  string `json:"picture"`
 	Email       string `json:"email"`

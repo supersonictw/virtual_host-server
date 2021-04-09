@@ -14,7 +14,7 @@ func RefactorPathValidator(path string, identification *auth.Identification) boo
 	if !filepath.IsAbs(path) {
 		return false
 	}
-	userDirectoryPath := FullPathExpressor("", identification)
+	userDirectoryPath := FullPathExpression("", identification)
 	if !strings.HasPrefix(path, userDirectoryPath) {
 		return false
 	}

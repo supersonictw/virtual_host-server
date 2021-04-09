@@ -16,7 +16,7 @@ type Write struct {
 func NewWrite(session *http.Session, path string) Interface {
 	instance := new(Write)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path, session.Identification)
+	instance.path = middleware.FullPathExpression(path, session.Identification)
 	return instance
 }
 

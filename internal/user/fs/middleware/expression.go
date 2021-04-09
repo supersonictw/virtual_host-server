@@ -18,7 +18,7 @@ func init() {
 	}
 }
 
-func FullPathExpressor(path string, identification *auth.Identification) string {
+func FullPathExpression(path string, identification *auth.Identification) string {
 	prefix := UserDirectoryPrefix(identification)
 	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
 	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, prefix, path)

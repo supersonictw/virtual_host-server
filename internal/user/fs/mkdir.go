@@ -18,7 +18,7 @@ type Mkdir struct {
 func NewMkdir(session *http.Session, path string) Interface {
 	instance := new(Mkdir)
 	instance.session = session
-	instance.path = middleware.FullPathExpressor(path, session.Identification)
+	instance.path = middleware.FullPathExpression(path, session.Identification)
 	return instance
 }
 

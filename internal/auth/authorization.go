@@ -5,6 +5,8 @@ package auth
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
+	"github.com/supersonictw/virtual_host-server/internal/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -59,10 +61,17 @@ func NewAuthorization(accessToken string) (*Authorization, error) {
 	return instance, nil
 }
 
+func (handler *Authorization) GetSession(c *gin.Context) *http.Session {
+	session := new(http.Session)
+	session.Identification = handler.GetIdentification()
+	session.Context = c
+	return session
+}
+
 func (handler *Authorization) GetIdentification() *Identification {
 	identification := new(Identification)
 	identification.DisplayName = handler.userInfo.Name
-	identification.Subject = handler.userInfo.Id
+	identification.Identity = handler.userInfo.Id
 	identification.PictureURL = handler.userInfo.Picture
 	identification.Email = handler.userInfo.Email
 	return identification

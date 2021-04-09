@@ -5,16 +5,13 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"os"
-	"strings"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	vhsHttp "github.com/supersonictw/virtual_host-server/internal/http"
 	"github.com/supersonictw/virtual_host-server/internal/user"
 	"github.com/supersonictw/virtual_host-server/internal/user/fs"
+	"net/http"
+	"os"
 )
 
 func init() {
@@ -28,9 +25,9 @@ func main() {
 
 	var frontendURI string
 	if os.Getenv("FRONTEND_SSL") == "yes" {
-		frontendURI = fmt.Sprintf("https://%s", os.Getenv("FRONTEND_DOMAIN"))
+		frontendURI = fmt.Sprintf("https://%s", os.Getenv("FRONTEND_HOSTNAME"))
 	} else {
-		frontendURI = fmt.Sprintf("http://%s", os.Getenv("FRONTEND_DOMAIN"))
+		frontendURI = fmt.Sprintf("http://%s", os.Getenv("FRONTEND_HOSTNAME"))
 	}
 
 	corsConfig := cors.DefaultConfig()
@@ -42,38 +39,6 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{
 			"application": "virtual_host-system",
 			"copyright":   "(c)2021 SuperSonic(https://github.com/supersonictw)",
-		})
-	})
-
-	router.GET("/authorize", func(c *gin.Context) {
-		session, _ := vhsHttp.ReadAuthCookie(c)
-		if session != nil {
-			c.JSON(http.StatusForbidden, gin.H{
-				"status": 403,
-			})
-			return
-		}
-
-		authorization := strings.Split(c.GetHeader("Authorization"), " ")
-		if len(authorization) != 2 {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"status": 400,
-			})
-			return
-		}
-		accessToken := authorization[1]
-
-		err := vhsHttp.IssueAuthCookie(accessToken, c)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"status": 401,
-				"reason": err.Error(),
-			})
-			return
-		}
-
-		c.JSON(http.StatusOK, gin.H{
-			"status": 200,
 		})
 	})
 

@@ -41,6 +41,6 @@ func (s *Session) Journalist(action string, target string) {
 		target,
 		s.Identification.DisplayName,
 		s.Identification.Email,
-		s.Identification.Subject,
+		s.Identification.Identity,
 	)
 }
