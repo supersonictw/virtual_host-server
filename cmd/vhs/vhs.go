@@ -24,10 +24,10 @@ func main() {
 	router := gin.Default()
 
 	var frontendURI string
-	if os.Getenv("FRONTEND_SSL") == "yes" {
-		frontendURI = fmt.Sprintf("https://%s", os.Getenv("FRONTEND_HOSTNAME"))
+	if hostname := os.Getenv("FRONTEND_HOSTNAME"); os.Getenv("FRONTEND_SSL") == "yes" {
+		frontendURI = fmt.Sprintf("https://%s", hostname)
 	} else {
-		frontendURI = fmt.Sprintf("http://%s", os.Getenv("FRONTEND_HOSTNAME"))
+		frontendURI = fmt.Sprintf("http://%s", hostname)
 	}
 
 	corsConfig := cors.DefaultConfig()

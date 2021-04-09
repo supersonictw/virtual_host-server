@@ -6,17 +6,23 @@ package fs
 import (
 	"encoding/base64"
 	"github.com/supersonictw/virtual_host-server/internal/auth"
+	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 	"io/fs"
 	"io/ioutil"
-	"strings"
-
-	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
 
 type ReadResponse struct {
-	Status bool   `json:"status"`
-	Type   int    `json:"type"`
-	Data   string `json:"data"`
+	Status bool        `json:"status"`
+	Type   int         `json:"type"`
+	Data   interface{} `json:"data"`
+}
+
+type File struct {
+	Name         string `json:"name"`
+	Type         int    `json:"type"`
+	Size         int64  `json:"size"`
+	Mode         string `json:"mode"`
+	LastModified int64  `json:"lastModified"`
 }
 
 type Read struct {
@@ -38,12 +44,22 @@ func (r *Read) Validate() bool {
 	return true
 }
 
-func getFileNamesInDirectory(files []fs.FileInfo) []string {
-	names := make([]string, len(files))
+func getFilesInDirectory(files []fs.FileInfo) []*File {
+	files_ := make([]*File, len(files))
 	for i, f := range files {
-		names[i] = f.Name()
+		type_ := 0
+		if f.IsDir() {
+			type_ = 1
+		}
+		files_[i] = &File{
+			Name:         f.Name(),
+			Type:         type_,
+			Size:         f.Size(),
+			Mode:         f.Mode().String(),
+			LastModified: f.ModTime().UnixNano(),
+		}
 	}
-	return names
+	return files_
 }
 
 func (r *Read) directoryHandler(response *ReadResponse) {
@@ -51,12 +67,8 @@ func (r *Read) directoryHandler(response *ReadResponse) {
 	if err != nil {
 		panic(err)
 	}
-	fileNames := getFileNamesInDirectory(directory)
-	if err != nil {
-		panic(err)
-	}
 	response.Status = true
-	response.Data = strings.Join(fileNames, ",")
+	response.Data = getFilesInDirectory(directory)
 }
 
 func (r *Read) fileHandler(response *ReadResponse) {
