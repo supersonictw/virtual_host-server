@@ -1,7 +1,7 @@
 // Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package http
+package auth
 
 import (
 	"fmt"
@@ -11,11 +11,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/supersonictw/virtual_host-server/internal/auth"
 )
 
 type Session struct {
-	Identification *auth.Identification
+	Identification *Identification
 	Context        *gin.Context
 }
 

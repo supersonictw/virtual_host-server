@@ -6,11 +6,10 @@ package user
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/supersonictw/virtual_host-server/internal/auth"
-	"github.com/supersonictw/virtual_host-server/internal/http"
 )
 
-func NewAccess(c *gin.Context) *http.Session {
-	accessToken := http.ReadAccessToken(c)
+func NewAccess(c *gin.Context) *auth.Session {
+	accessToken := auth.ReadAccessToken(c)
 	if accessToken == "" {
 		return nil
 	}

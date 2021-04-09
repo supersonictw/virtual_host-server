@@ -1,7 +1,7 @@
 // Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package http
+package auth
 
 import (
 	"github.com/gin-gonic/gin"

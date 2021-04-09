@@ -4,16 +4,16 @@
 package fs
 
 import (
-	"github.com/supersonictw/virtual_host-server/internal/http"
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
 
 type Write struct {
-	session *http.Session
+	session *auth.Session
 	path    string
 }
 
-func NewWrite(session *http.Session, path string) Interface {
+func NewWrite(session *auth.Session, path string) Interface {
 	instance := new(Write)
 	instance.session = session
 	instance.path = middleware.FullPathExpression(path, session.Identification)

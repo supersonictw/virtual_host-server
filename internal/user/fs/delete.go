@@ -4,18 +4,18 @@
 package fs
 
 import (
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"os"
 
-	"github.com/supersonictw/virtual_host-server/internal/http"
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
 
 type Remove struct {
-	session *http.Session
+	session *auth.Session
 	path    string
 }
 
-func NewRemove(session *http.Session, path string) Interface {
+func NewRemove(session *auth.Session, path string) Interface {
 	instance := new(Remove)
 	instance.session = session
 	instance.path = middleware.FullPathExpression(path, session.Identification)

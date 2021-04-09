@@ -5,11 +5,11 @@ package fs
 
 import (
 	"encoding/base64"
+	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"io/fs"
 	"io/ioutil"
 	"strings"
 
-	"github.com/supersonictw/virtual_host-server/internal/http"
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
 
@@ -20,11 +20,11 @@ type ReadResponse struct {
 }
 
 type Read struct {
-	session *http.Session
+	session *auth.Session
 	path    string
 }
 
-func NewRead(session *http.Session, path string) Interface {
+func NewRead(session *auth.Session, path string) Interface {
 	instance := new(Read)
 	instance.session = session
 	instance.path = middleware.FullPathExpression(path, session.Identification)
