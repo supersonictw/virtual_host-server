@@ -8,15 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/joho/godotenv"
 	"github.com/supersonictw/virtual_host-server/internal/auth"
 )
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
-}
 
 func FullPathExpression(path string, identification *auth.Identification) string {
 	prefix := UserDirectoryPrefix(identification)

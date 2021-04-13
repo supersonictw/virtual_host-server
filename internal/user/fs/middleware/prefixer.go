@@ -8,15 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/supersonictw/virtual_host-server/internal/auth"
 )
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
-}
 
 func UserDirectoryPrefix(identification *auth.Identification) string {
 	if os.Getenv("STORAGE_USER_DIRECTORY_NAME_METHOD") == "email" {

@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"os"
 
-	"github.com/joho/godotenv"
 	OpenID2 "golang.org/x/oauth2"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
@@ -17,12 +16,6 @@ import (
 type Authorization struct {
 	client   *oauth2.Service
 	userInfo *oauth2.Userinfo
-}
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
 }
 
 func NewAuthorization(accessToken string) (*Authorization, error) {

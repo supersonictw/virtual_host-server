@@ -10,18 +10,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 type Session struct {
 	Identification *Identification
 	Context        *gin.Context
-}
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		panic(err)
-	}
 }
 
 func (s *Session) Journalist(action string, target string) {
