@@ -1,15 +1,16 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package Http
+package auth
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 type Session struct {

@@ -1,7 +1,7 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package FileSystem
+package fs
 
 type Interface interface {
 	Validate() bool

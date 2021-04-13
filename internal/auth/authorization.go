@@ -1,16 +1,17 @@
-// Package VHS: Virtual Host System - Server
+// Virtual Host System - Server
 // (c)2021 SuperSonic (https://github.com/supersonictw)
 
-package Http
+package auth
 
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"os"
+
 	"github.com/joho/godotenv"
 	OpenID2 "golang.org/x/oauth2"
 	"google.golang.org/api/oauth2/v2"
 	"google.golang.org/api/option"
-	"os"
 )
 
 type Authorization struct {
@@ -24,7 +25,7 @@ func init() {
 	}
 }
 
-func NewAuthorization(accessToken string) *Authorization {
+func NewAuthorization(accessToken string) (*Authorization, error) {
 	var err error
 	instance := new(Authorization)
 	ctx := context.Background()
@@ -47,16 +48,16 @@ func NewAuthorization(accessToken string) *Authorization {
 		if os.Getenv("ENVIRONMENT") == "env" {
 			panic(err)
 		}
-		return nil
+		return nil, err
 	}
 	instance.userInfo, err = instance.client.Userinfo.Get().Do()
 	if err != nil {
 		if os.Getenv("ENVIRONMENT") == "env" {
 			panic(err)
 		}
-		return nil
+		return nil, err
 	}
-	return instance
+	return instance, nil
 }
 
 func (handler *Authorization) GetSession(c *gin.Context) *Session {
