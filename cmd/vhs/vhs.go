@@ -113,6 +113,27 @@ func main() {
 		}
 	})
 
+	router.PATCH("/user/*path", func(c *gin.Context) {
+		path := c.Param("path")
+		session := user.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
+		handler := fs.NewRename(session, path)
+		if handler.Refactor().(bool) {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 200,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+			})
+		}
+	})
+
 	router.DELETE("/user/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := user.NewAccess(c)
