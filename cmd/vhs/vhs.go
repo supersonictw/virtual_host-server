@@ -23,6 +23,22 @@ func init() {
 func main() {
 	router := gin.Default()
 
+	if os.Getenv("CORS_SUPPORT") == "yes" {
+		var frontendURI string
+		if hostname := os.Getenv("FRONTEND_HOSTNAME"); os.Getenv("FRONTEND_SSL") == "yes" {
+			frontendURI = fmt.Sprintf("https://%s", hostname)
+		} else {
+			frontendURI = fmt.Sprintf("http://%s", hostname)
+		}
+
+		corsConfig := cors.DefaultConfig()
+		corsConfig.AllowOrigins = []string{frontendURI}
+		corsConfig.AllowCredentials = true
+		corsConfig.AddAllowHeaders("Authorization")
+
+		router.Use(cors.New(corsConfig))
+	}
+
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"application": "virtual_host-system",
@@ -154,22 +170,6 @@ func main() {
 			})
 		}
 	})
-
-	if os.Getenv("CORS_SUPPORT") == "yes" {
-		var frontendURI string
-		if hostname := os.Getenv("FRONTEND_HOSTNAME"); os.Getenv("FRONTEND_SSL") == "yes" {
-			frontendURI = fmt.Sprintf("https://%s", hostname)
-		} else {
-			frontendURI = fmt.Sprintf("http://%s", hostname)
-		}
-
-		corsConfig := cors.DefaultConfig()
-		corsConfig.AllowOrigins = []string{frontendURI}
-		corsConfig.AllowCredentials = true
-		corsConfig.AddAllowHeaders("Authorization")
-
-		router.Use(cors.New(corsConfig))
-	}
 
 	exposePort := fmt.Sprintf(":%s", os.Getenv("EXPOSE_PORT"))
 	if err := router.Run(exposePort); err != nil {
