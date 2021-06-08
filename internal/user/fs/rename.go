@@ -4,10 +4,10 @@
 package fs
 
 import (
-	"fmt"
 	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
@@ -23,7 +23,7 @@ func NewRename(session *auth.Session, path string) Interface {
 	instance.session = session
 	instance.path = middleware.FullPathExpression(path, session.Identification)
 	newName := session.Context.PostForm("name")
-	newPath := fmt.Sprintf("%s/%s", filepath.Dir(path), newName)
+	newPath := filepath.Join(filepath.Dir(path), newName)
 	instance.newPath = middleware.FullPathExpression(newPath, session.Identification)
 	return instance
 }
@@ -39,14 +39,19 @@ func (r *Rename) Validate() bool {
 	return true
 }
 
-func (r *Rename) Refactor() interface{} {
+func (r *Rename) Refactor() Response {
+	response := new(GeneralResponse)
+	response.Status = false
 	if !r.Validate() {
-		return false
+		response.Data = "Not Allowed"
+		return response
 	}
 	err := os.Rename(r.path, r.newPath)
 	if err != nil {
-		panic(err)
+		response.Data = strings.Title(err.Error())
+		return response
 	}
+	response.Status = true
 	r.session.Journalist("Rename", r.path)
-	return true
+	return response
 }

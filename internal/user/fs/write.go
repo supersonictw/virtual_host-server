@@ -6,6 +6,7 @@ package fs
 import (
 	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
+	"strings"
 )
 
 type Write struct {
@@ -27,16 +28,21 @@ func (w *Write) Validate() bool {
 	return true
 }
 
-func (w *Write) Refactor() interface{} {
+func (w *Write) Refactor() Response {
+	response := new(GeneralResponse)
+	response.Status = false
 	if !w.Validate() {
-		return false
+		response.Data = "Not Allowed"
+		return response
 	}
 	context := w.session.Context
 	file, _ := context.FormFile("file")
 	err := context.SaveUploadedFile(file, w.path)
 	if err != nil {
-		panic(err)
+		response.Data = strings.Title(err.Error())
+		return response
 	}
+	response.Status = true
 	w.session.Journalist("Write", w.path)
-	return true
+	return response
 }

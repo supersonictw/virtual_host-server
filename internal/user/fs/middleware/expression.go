@@ -4,7 +4,6 @@
 package middleware
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -14,7 +13,7 @@ import (
 func FullPathExpression(path string, identification *auth.Identification) string {
 	prefix := UserDirectoryPrefix(identification)
 	storageRootDirectoryPath := os.Getenv("STORAGE_ROOT_DIRECTORY_PATH")
-	wordDirectory := fmt.Sprintf("%s/%s/%s", storageRootDirectoryPath, prefix, path)
+	wordDirectory := filepath.Join(storageRootDirectoryPath, prefix, path)
 	result, err := filepath.Abs(wordDirectory)
 	if err != nil {
 		panic(err)

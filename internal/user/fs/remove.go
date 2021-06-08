@@ -6,6 +6,7 @@ package fs
 import (
 	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"os"
+	"strings"
 
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
@@ -32,14 +33,19 @@ func (r *Remove) Validate() bool {
 	return true
 }
 
-func (r *Remove) Refactor() interface{} {
+func (r *Remove) Refactor() Response {
+	response := new(GeneralResponse)
+	response.Status = false
 	if !r.Validate() {
-		return false
+		response.Data = "Not Allowed"
+		return response
 	}
 	err := os.RemoveAll(r.path)
 	if err != nil {
-		panic(err)
+		response.Data = strings.Title(err.Error())
+		return response
 	}
+	response.Status = true
 	r.session.Journalist("Remove", r.path)
-	return true
+	return response
 }

@@ -70,8 +70,7 @@ func main() {
 			return
 		}
 		handler := fs.NewRead(session, path)
-		result := handler.Refactor().(*fs.ReadResponse)
-		if result.Status {
+		if result := handler.Refactor().(*fs.ReadResponse); result.Status {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
 				"data":   result,
@@ -79,10 +78,12 @@ func main() {
 		} else if result.Type == 0 {
 			c.JSON(http.StatusNotFound, gin.H{
 				"status": 404,
+				"code":   result.Type,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -97,13 +98,14 @@ func main() {
 			return
 		}
 		handler := fs.NewMkdir(session, path)
-		if handler.Refactor().(bool) {
+		if result := handler.Refactor(); result.GetStatus() {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -118,13 +120,14 @@ func main() {
 			return
 		}
 		handler := fs.NewWrite(session, path)
-		if handler.Refactor().(bool) {
+		if result := handler.Refactor(); result.GetStatus() {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -139,13 +142,14 @@ func main() {
 			return
 		}
 		handler := fs.NewRename(session, path)
-		if handler.Refactor().(bool) {
+		if result := handler.Refactor(); result.GetStatus() {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -160,13 +164,58 @@ func main() {
 			return
 		}
 		handler := fs.NewRemove(session, path)
-		if handler.Refactor().(bool) {
+		if result := handler.Refactor(); result.GetStatus() {
 			c.JSON(http.StatusOK, gin.H{
 				"status": 200,
 			})
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
+				"reason": result.GetData(),
+			})
+		}
+	})
+
+	router.POST("/zip/*path", func(c *gin.Context) {
+		path := c.Param("path")
+		session := user.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
+		handler := fs.NewZip(session, path)
+		if result := handler.Refactor(); result.GetStatus() {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 200,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"reason": result.GetData(),
+			})
+		}
+	})
+
+	router.DELETE("/zip/*path", func(c *gin.Context) {
+		path := c.Param("path")
+		session := user.NewAccess(c)
+		if session == nil {
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"status": 401,
+			})
+			return
+		}
+		handler := fs.NewUnzip(session, path)
+		if result := handler.Refactor(); result.GetStatus() {
+			c.JSON(http.StatusOK, gin.H{
+				"status": 200,
+			})
+		} else {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"status": 400,
+				"reason": result.GetData(),
 			})
 		}
 	})
