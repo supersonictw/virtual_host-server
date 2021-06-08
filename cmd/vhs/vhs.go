@@ -83,7 +83,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -105,7 +105,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -127,7 +127,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -149,7 +149,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})
@@ -171,12 +171,12 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})
 
-	router.POST("/user/zip/*path", func(c *gin.Context) {
+	router.POST("/zip/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := user.NewAccess(c)
 		if session == nil {
@@ -193,12 +193,12 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})
 
-	router.DELETE("/user/zip/*path", func(c *gin.Context) {
+	router.DELETE("/zip/*path", func(c *gin.Context) {
 		path := c.Param("path")
 		session := user.NewAccess(c)
 		if session == nil {
@@ -215,7 +215,7 @@ func main() {
 		} else {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"status": 400,
-				"reason": result.GetData().(string),
+				"reason": result.GetData(),
 			})
 		}
 	})

@@ -51,6 +51,7 @@ func (r *Rename) Refactor() Response {
 		response.Data = strings.Title(err.Error())
 		return response
 	}
+	response.Status = true
 	r.session.Journalist("Rename", r.path)
 	return response
 }

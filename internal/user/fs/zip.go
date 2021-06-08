@@ -80,6 +80,8 @@ func (z *Zip) compress(response *GeneralResponse) {
 		response.Data = strings.Title(err.Error())
 		return
 	}
+
+	response.Status = true
 }
 
 func (z *Zip) Refactor() Response {
