@@ -9,12 +9,12 @@ import (
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 	"io/fs"
 	"io/ioutil"
+	"strings"
 )
 
 type ReadResponse struct {
-	Status bool        `json:"status"`
-	Type   int         `json:"type"`
-	Data   interface{} `json:"data"`
+	GeneralResponse
+	Type int `json:"type"`
 }
 
 type File struct {
@@ -62,37 +62,48 @@ func getFilesInDirectory(files []fs.FileInfo) []*File {
 	return files_
 }
 
-func (r *Read) directoryHandler(response *ReadResponse) {
+func (r *Read) directoryHandler(response *ReadResponse) error {
 	directory, err := ioutil.ReadDir(r.path)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	response.Status = true
 	response.Data = getFilesInDirectory(directory)
+	return nil
 }
 
-func (r *Read) fileHandler(response *ReadResponse) {
+func (r *Read) fileHandler(response *ReadResponse) error {
 	content, err := ioutil.ReadFile(r.path)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	response.Status = true
 	response.Data = base64.StdEncoding.EncodeToString(content)
+	return nil
 }
 
-func (r *Read) Refactor() interface{} {
+func (r *Read) Refactor() Response {
 	response := new(ReadResponse)
 	response.Status = false
 	response.Type = middleware.PathTypeDetector(r.path)
 	if !r.Validate() {
+		response.Data = "Not Allowed"
 		return response
 	}
 	switch response.Type {
 	case middleware.Directory:
-		r.directoryHandler(response)
+		err := r.directoryHandler(response)
+		if err != nil {
+			response.Data = strings.Title(err.Error())
+			return response
+		}
 		break
 	case middleware.File:
-		r.fileHandler(response)
+		err := r.fileHandler(response)
+		if err != nil {
+			response.Data = strings.Title(err.Error())
+			return response
+		}
 		break
 	default:
 		return response

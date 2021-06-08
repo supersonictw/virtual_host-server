@@ -6,6 +6,7 @@ package fs
 import (
 	"github.com/supersonictw/virtual_host-server/internal/auth"
 	"os"
+	"strings"
 
 	"github.com/supersonictw/virtual_host-server/internal/user/fs/middleware"
 )
@@ -32,14 +33,19 @@ func (m *Mkdir) Validate() bool {
 	return true
 }
 
-func (m *Mkdir) Refactor() interface{} {
+func (m *Mkdir) Refactor() Response {
+	response := new(GeneralResponse)
+	response.Status = false
 	if !m.Validate() {
-		return false
+		response.Data = "Not Allowed"
+		return response
 	}
 	err := os.MkdirAll(m.path, 0755)
 	if err != nil {
-		panic(err)
+		response.Data = strings.Title(err.Error())
+		return response
 	}
+	response.Status = true
 	m.session.Journalist("Mkdir", m.path)
-	return true
+	return response
 }

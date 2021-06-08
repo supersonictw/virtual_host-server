@@ -5,5 +5,5 @@ package fs
 
 type Interface interface {
 	Validate() bool
-	Refactor() interface{}
+	Refactor() Response
 }

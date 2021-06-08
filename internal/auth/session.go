@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,7 @@ type Session struct {
 func (s *Session) Journalist(action string, target string) {
 	logRootPath := os.Getenv("LOG_DIRECTORY_PATH")
 	time := time.Now().Format("2006-01-02")
-	logPath := fmt.Sprintf("%s/%s.log", logRootPath, time)
+	logPath := filepath.Join(logRootPath, fmt.Sprintf("%s.log", time))
 	file, err := os.OpenFile(logPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
