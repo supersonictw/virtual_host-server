@@ -49,6 +49,13 @@ func (z *Zip) compress(response *GeneralResponse) {
 	}
 
 	w := zip.NewWriter(destinationFile)
+	defer func() {
+		err := w.Close()
+		if err != nil {
+			panic(err)
+		}
+	}()
+
 	err = filepath.Walk(z.origin, func(filePath string, info os.FileInfo, err error) error {
 		if info.IsDir() {
 			return nil
@@ -76,11 +83,6 @@ func (z *Zip) compress(response *GeneralResponse) {
 		return
 	}
 
-	if err = w.Close(); err != nil {
-		response.Data = strings.Title(err.Error())
-		return
-	}
-
 	response.Status = true
 }
 
@@ -91,7 +93,7 @@ func (z *Zip) Refactor() Response {
 		response.Data = "Not Allowed"
 		return response
 	}
-
+	z.compress(response)
 	z.session.Journalist("Zip", z.path)
 	return response
 }
